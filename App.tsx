@@ -1,11 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+
+import {
+  ensureNotificationPermission,
+  showLocalNotification,
+} from './src/notifications/localNotifications';
 
 export default function App() {
+  const handleNotify = async () => {
+    try {
+      const allowed = await ensureNotificationPermission();
+      if (!allowed) {
+        Alert.alert('Permiso denegado', 'Activa los avisos en ajustes del teléfono.');
+        return;
+      }
+      await showLocalNotification();
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo preparar la notificación.');
+      console.log(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <Text style={styles.title}>Laboratorio de avisos</Text>
+      <Text style={styles.description}>
+        Pulsa el botón para probar una notificación.
+      </Text>
+
+      <Pressable style={styles.button} onPress={handleNotify}>
+        <Text style={styles.buttonText}>Enviar notificación</Text>
+      </Pressable>
     </View>
   );
 }
@@ -13,8 +37,26 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  title: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  description: {
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  button: {
+    backgroundColor: '#087f8c',
+    padding: 16,
+    borderRadius: 12,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });

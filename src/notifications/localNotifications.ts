@@ -14,10 +14,14 @@ Notifications.setNotificationHandler({
 
 export async function ensureNotificationPermission(): Promise<boolean> {
   if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
-      name: 'Avisos de laboratorio',
-      importance: Notifications.AndroidImportance.HIGH,
-    });
+    try {
+        await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
+        name: 'Avisos de laboratorio',
+        importance: Notifications.AndroidImportance.HIGH,
+        });
+    } catch {
+        
+    }
   }
 
   let permission = await Notifications.getPermissionsAsync();
